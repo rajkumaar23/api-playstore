@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
+ */
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -90,6 +93,7 @@ class API
      */
     public function getDeveloper()
     {
-        return $this->crawler->filter('.htlgb')->eq(18)->text();
+        $size = sizeof($this->crawler->filter('.htlgb'));
+        return $this->crawler->filter('.htlgb')->eq($size == 20 ? 17 : 18)->text();
     }
 }
