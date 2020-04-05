@@ -1,0 +1,8 @@
+{
+    "require": {
+        "symfony/dom-crawler": "^5.0",
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.0",
+        "symfony/css-selector": "^5.0"
+    }
+}
