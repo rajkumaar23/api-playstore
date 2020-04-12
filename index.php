@@ -13,7 +13,8 @@ require __DIR__ . '/vendor/autoload.php';
 require 'DB.php';
 require 'Utils.php';
 require 'api.php';
-define("CACHE_INTERVAL_MINUTES", 1440);
+define("CACHE_INTERVAL_SECONDS", 86400);
+date_default_timezone_set("Asia/Kolkata");
 
 $app = AppFactory::create();
 
