@@ -3,31 +3,44 @@
  * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
  */
 
+use Carbon\Carbon;
 use Symfony\Component\DomCrawler\Crawler;
+
 
 /**
  * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
  */
 class API
 {
-    /**
-     * @var string
-     */
     private $playstoreURL;
-    /**
-     * @var Crawler
-     */
     private $crawler;
-    private $packageID;
+    private $conn;
+    private $data;
 
     public function __construct($package)
     {
-        $this->packageID = $package;
-        $this->playstoreURL = 'https://play.google.com/store/apps/details?id=' . $this->packageID;
-        if ($html = file_get_contents($this->playstoreURL)) {
-            $this->crawler = new Crawler($html);
+        $this->playstoreURL = 'https://play.google.com/store/apps/details?id=' . $package;
+        $this->conn = (new DB())->getConn();
+        $this->data = $this->conn->findOne(['packageID' => $package]);
+        if (empty($this->data) || Utils::shouldUpdateCache($this->data['lastCached'])) {
+            if ($html = file_get_contents($this->playstoreURL)) {
+                $this->crawler = new Crawler($html);
+                $htlgb = $this->crawler->filter('.htlgb');
+                $this->data['packageID'] = $package;
+                $this->data['version'] = $htlgb->eq(6)->text();
+                $this->data['installs'] = $htlgb->eq(5)->text();
+                $this->data['size'] = $htlgb->eq(3)->text();
+                $this->data['lastUpdated'] = $htlgb->eq(1)->text();
+                $this->data['rating'] = $this->crawler->filter('.BHMmbe')->eq(0)->text();
+                $this->data['noOfUsersRated'] = filter_var($this->crawler->filter('.EymY4b')->eq(0)->text(), FILTER_SANITIZE_NUMBER_INT);
+                $this->data['developer'] = $htlgb->eq(sizeof($htlgb) == 20 ? 17 : 18)->text();
+                $this->data['lastCached'] = Carbon::now();
+                $this->conn->insertOne($this->data);
+            } else {
+                throw new Exception("Invalid Package ID");
+            }
         } else {
-            throw new Exception("Invalid Package ID");
+
         }
     }
 
@@ -36,7 +49,7 @@ class API
      */
     public function getPackageID()
     {
-        return $this->packageID;
+        return $this->data['packageID'];
     }
 
     /**
@@ -44,7 +57,7 @@ class API
      */
     public function getVersion()
     {
-        return $this->crawler->filter('.htlgb')->eq(6)->text();
+        return $this->data['version'];
     }
 
     /**
@@ -52,7 +65,7 @@ class API
      */
     public function getInstalls()
     {
-        return $this->crawler->filter('.htlgb')->eq(5)->text();
+        return $this->data['installs'];
     }
 
     /**
@@ -60,7 +73,7 @@ class API
      */
     public function getSize()
     {
-        return $this->crawler->filter('.htlgb')->eq(3)->text();
+        return $this->data['size'];
     }
 
     /**
@@ -68,8 +81,7 @@ class API
      */
     public function getLastUpdated()
     {
-//        die(var_dump($this->crawler->filter('.EymY4b')));
-        return $this->crawler->filter('.htlgb')->eq(1)->text();
+        return $this->data['lastUpdated'];
     }
 
     /**
@@ -77,7 +89,7 @@ class API
      */
     public function getRating()
     {
-        return $this->crawler->filter('.BHMmbe')->eq(0)->text();
+        return $this->data['rating'];
     }
 
     /**
@@ -85,7 +97,7 @@ class API
      */
     public function getNoOfUsersRated()
     {
-        return filter_var($this->crawler->filter('.EymY4b')->eq(0)->text(), FILTER_SANITIZE_NUMBER_INT);
+        return $this->data['noOfUsersRated'];
     }
 
     /**
@@ -93,7 +105,6 @@ class API
      */
     public function getDeveloper()
     {
-        $size = sizeof($this->crawler->filter('.htlgb'));
-        return $this->crawler->filter('.htlgb')->eq($size == 20 ? 17 : 18)->text();
+        return $this->data['developer'];
     }
 }

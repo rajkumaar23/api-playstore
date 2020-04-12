@@ -10,7 +10,10 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/vendor/autoload.php';
+require 'DB.php';
+require 'Utils.php';
 require 'api.php';
+define("CACHE_INTERVAL_MINUTES", 1440);
 
 $app = AppFactory::create();
 
