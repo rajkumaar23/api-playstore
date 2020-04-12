@@ -34,13 +34,11 @@ class API
                 $this->data['rating'] = $this->crawler->filter('.BHMmbe')->eq(0)->text();
                 $this->data['noOfUsersRated'] = filter_var($this->crawler->filter('.EymY4b')->eq(0)->text(), FILTER_SANITIZE_NUMBER_INT);
                 $this->data['developer'] = $htlgb->eq(sizeof($htlgb) == 20 ? 17 : 18)->text();
-                $this->data['lastCached'] = Carbon::now();
+                $this->data['lastCached'] = Carbon::now()->toISOString();
                 $this->conn->insertOne($this->data);
             } else {
                 throw new Exception("Invalid Package ID");
             }
-        } else {
-
         }
     }
 

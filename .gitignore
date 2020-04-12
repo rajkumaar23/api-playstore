@@ -1,1 +1,9 @@
 vendor/
+/.idea/dictionaries/
+/.idea/.name
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/playstore-api.iml
+/.idea/vcs.xml
+/.idea/workspace.xml

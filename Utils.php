@@ -12,6 +12,6 @@ class Utils
 {
     public static function shouldUpdateCache($dateTime)
     {
-        return empty($dateTime) || (Carbon::parse($dateTime->date)->diffInMinutes(null) > CACHE_INTERVAL_MINUTES);
+        return empty($dateTime) || (Carbon::parse($dateTime)->diffInMinutes(null) > CACHE_INTERVAL_MINUTES);
     }
 }
