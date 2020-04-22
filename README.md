@@ -21,13 +21,13 @@
 ```
 To get the above json, you can visit 
 ```
-https://api-playstore.herokuapp.com/json?id=<YOUR-PACKAGE-ID>
+https://api-playstore.rajkumaar.co.in/json?id=<YOUR-PACKAGE-ID>
 ```
-> Example : https://api-playstore.herokuapp.com/json?id=in.co.rajkumaar.amritarepo
+> Example : https://api-playstore.rajkumaar.co.in/json?id=in.co.rajkumaar.amritarepo
 
 - For a badge on particular attribute, you can use
 ```markdown
-![Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/<ATTRIBUTE-NAME>?id=<PACKAGE-ID>)
+![Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/<ATTRIBUTE-NAME>?id=<PACKAGE-ID>)
 ```
 > The attributes should be one among : [downloads, package, version, size, lastUpdated, rating, noOfUsersRated, developer]
 
@@ -37,27 +37,27 @@ https://api-playstore.herokuapp.com/json?id=<YOUR-PACKAGE-ID>
 
 - Downloads
 ```markdown
-![Downloads Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/downloads?id=in.co.rajkumaar.amritarepo&color=success)
+![Downloads Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/downloads?id=in.co.rajkumaar.amritarepo&color=success)
 ```
-![Downloads Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/downloads?id=in.co.rajkumaar.amritarepo&color=success)
+![Downloads Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/downloads?id=in.co.rajkumaar.amritarepo&color=success)
 
 - Version
 ```markdown
-![Version Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/version?id=in.co.rajkumaar.amritarepo&color=blue)
+![Version Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/version?id=in.co.rajkumaar.amritarepo&color=blue)
 ```
-![Version Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/version?id=in.co.rajkumaar.amritarepo&color=blue)
+![Version Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/version?id=in.co.rajkumaar.amritarepo&color=blue)
 
 - Rating
 ```markdown
-![Rating Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/rating?id=in.co.rajkumaar.amritarepo&color=blueviolet&style=flat-square&logo=android)
+![Rating Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/rating?id=in.co.rajkumaar.amritarepo&color=blueviolet&style=flat-square&logo=android)
 ```
-![Rating Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/rating?id=in.co.rajkumaar.amritarepo&color=blueviolet&style=flat-square&logo=android)
+![Rating Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/rating?id=in.co.rajkumaar.amritarepo&color=blueviolet&style=flat-square&logo=android)
 
 - Developer
 ```markdown
-![Dev Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/developer?id=in.co.rajkumaar.amritarepo&color=orange&style=for-the-badge)
+![Dev Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/developer?id=in.co.rajkumaar.amritarepo&color=orange&style=for-the-badge)
 ```
-![Dev Badge](https://img.shields.io/endpoint?url=https://api-playstore.herokuapp.com/developer?id=in.co.rajkumaar.amritarepo&color=orange&style=for-the-badge)
+![Dev Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/developer?id=in.co.rajkumaar.amritarepo&color=orange&style=for-the-badge)
 
 ### License
 Find the license [here](LICENSE)
