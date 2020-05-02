@@ -1,43 +1,51 @@
 <?php
+
 /**
  * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
  */
 
 use Symfony\Component\DomCrawler\Crawler;
 
-
-/**
- * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
- */
 class API
 {
-    private $playstoreURL;
-    private $crawler;
     private $conn;
     private $data;
 
     public function __construct($package)
     {
-        $this->playstoreURL = 'https://play.google.com/store/apps/details?id=' . $package;
         $this->conn = (new DB())->getConn();
         $this->data = $this->conn->findOne(['packageID' => $package]);
-        if (empty($this->data) || Utils::shouldUpdateCache($this->data['lastCached'])) {
-            if ($html = file_get_contents($this->playstoreURL)) {
-                $this->crawler = new Crawler($html);
-                $htlgb = $this->crawler->filter('.htlgb');
-                $this->data['packageID'] = $package;
-                $this->data['version'] = $htlgb->eq(6)->text();
-                $this->data['installs'] = $htlgb->eq(5)->text();
-                $this->data['size'] = $htlgb->eq(3)->text();
-                $this->data['lastUpdated'] = $htlgb->eq(1)->text();
-                $this->data['rating'] = $this->crawler->filter('.BHMmbe')->eq(0)->text();
-                $this->data['noOfUsersRated'] = filter_var($this->crawler->filter('.EymY4b')->eq(0)->text(), FILTER_SANITIZE_NUMBER_INT);
-                $this->data['developer'] = $htlgb->eq(sizeof($htlgb) == 20 ? 17 : 18)->text();
-                $this->data['lastCached'] = time();
-                $this->conn->updateOne(['packageID' => $package], ['$set' => $this->data], ['upsert' => true]);
-            } else {
-                throw new Exception("Invalid Package ID");
+        if (!empty($this->data)) {
+            if (Utils::shouldUpdateCache($this->data['lastCached'])) {
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                $command = "curl -s " . $protocol . $_SERVER['HTTP_HOST'] . "/update-cache?id=$package";
+                exec("nohup '.$command.' > /dev/null 2>&1 & echo $!");
             }
+        } else {
+            $this->data = self::updateCache($package);
+        }
+    }
+
+    public static function updateCache($package)
+    {
+        $playstoreURL = 'https://play.google.com/store/apps/details?id=' . $package;
+        if ($html = file_get_contents($playstoreURL)) {
+            $conn = (new DB())->getConn();
+            $crawler = new Crawler($html);
+            $htlgb = $crawler->filter('.htlgb');
+            $data['packageID'] = $package;
+            $data['version'] = $htlgb->eq(6)->text();
+            $data['installs'] = $htlgb->eq(5)->text();
+            $data['size'] = $htlgb->eq(3)->text();
+            $data['lastUpdated'] = $htlgb->eq(1)->text();
+            $data['rating'] = $crawler->filter('.BHMmbe')->eq(0)->text();
+            $data['noOfUsersRated'] = filter_var($crawler->filter('.EymY4b')->eq(0)->text(), FILTER_SANITIZE_NUMBER_INT);
+            $data['developer'] = $htlgb->eq(sizeof($htlgb) == 20 ? 17 : 18)->text();
+            $data['lastCached'] = time();
+            $conn->updateOne(['packageID' => $package], ['$set' => $data], ['upsert' => true]);
+            return $data;
+        } else {
+            throw new Exception("Invalid Package ID");
         }
     }
 

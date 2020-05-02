@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2020 | RAJKUMAR S (http://rajkumaar.co.in)
  */
@@ -13,7 +14,7 @@ require __DIR__ . '/vendor/autoload.php';
 require 'DB.php';
 require 'Utils.php';
 require 'api.php';
-define("CACHE_INTERVAL_SECONDS", 86400);
+define("CACHE_INTERVAL_SECONDS", 3600);
 date_default_timezone_set("Asia/Kolkata");
 
 $app = AppFactory::create();
@@ -33,42 +34,51 @@ $app->get('/json', function (Request $request, Response $response) {
     return $response->withAddedHeader('Content-Type', 'application/json');
 });
 
+$app->get('/update-cache', function (Request $request, Response $response, $args) {
+    $packageID = $request->getQueryParams()['id'];
+    API::updateCache($packageID);
+    $response->getBody()->write(json_encode([
+        'message' => 'Data successfully updated for ' . $packageID
+    ]));
+    return $response->withAddedHeader('Content-Type', 'application/json');
+});
+
 $app->get('/{type}', function (Request $request, Response $response, $args) {
     $api = new API($request->getQueryParams()['id']);
     switch ($args['type']) {
-        case 'downloads' :
+        case 'downloads':
             $label = "Downloads";
             $message = $api->getInstalls();
             break;
-        case 'package' :
+        case 'package':
             $label = "Package ID";
             $message = $api->getPackageID();
             break;
-        case 'version' :
+        case 'version':
             $label = "Version";
             $message = $api->getVersion();
             break;
-        case 'size' :
+        case 'size':
             $label = "App Size";
             $message = $api->getSize();
             break;
-        case 'lastUpdated' :
+        case 'lastUpdated':
             $label = "Last Updated On";
             $message = $api->getLastUpdated();
             break;
-        case 'rating' :
+        case 'rating':
             $label = "Rating";
             $message = $api->getRating();
             break;
-        case 'developer' :
+        case 'developer':
             $label = "Developer";
             $message = $api->getDeveloper();
             break;
-        case 'noOfUsersRated' :
+        case 'noOfUsersRated':
             $label = "No of users rated";
             $message = $api->getNoOfUsersRated();
             break;
-        default :
+        default:
             $label = "Badge Type";
             $message = "Invalid";
             break;
@@ -97,5 +107,3 @@ $customErrorHandler = function (
 $errorMiddleware = $app->addErrorMiddleware(false, true, true);
 $errorMiddleware->setDefaultErrorHandler($customErrorHandler);
 $app->run();
-
-

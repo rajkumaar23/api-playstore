@@ -7,6 +7,6 @@ class Utils
 {
     public static function shouldUpdateCache($dateTime)
     {
-        return empty($dateTime) || (time() > $dateTime + CACHE_INTERVAL_SECONDS);
+        return empty($dateTime) || (time() > ($dateTime + CACHE_INTERVAL_SECONDS));
     }
 }
