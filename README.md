@@ -2,7 +2,8 @@
 
 > A helper tool that can be used in combination with shields.io for generating android app related badges with realtime values for your app's README file.
 
-![Custom Badge](https://img.shields.io/static/v1?label=SAY%20NO%20TO&message=HARD-CODING&color=red&style=for-the-badge)
+![Playstore API CD](https://github.com/rajkumaar23/playstore-api/workflows/Playstore%20API%20CD/badge.svg)
+![Say NO to hardcoding](https://img.shields.io/static/v1?label=Say%20NO%20to&message=HARD-CODING&color=red) 
 
 ## Usage
 
