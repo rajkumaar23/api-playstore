@@ -19,7 +19,7 @@ class API
             if (Utils::shouldUpdateCache($this->data['lastCached'])) {
                 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
                 $command = "curl -s " . $protocol . $_SERVER['HTTP_HOST'] . "/update-cache?id=$package";
-                exec("nohup '.$command.' > /dev/null 2>&1 & echo $!");
+                exec(sprintf("%s > /dev/null 2>&1", $command));
             }
         } else {
             $this->data = self::updateCache($package);
