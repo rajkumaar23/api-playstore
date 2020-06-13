@@ -67,6 +67,7 @@ Developer
   <tr>
     <td align="center"><a href="https://github.com/rajkumaar23/amrita-repository"><img src="https://raw.githubusercontent.com/rajkumaar23/amrita-repository/master/app/src/main/res/drawable/logosq.png" width="100px;" alt=""/><br/><sub><b>Amrita Repository</b></sub></a></td>
     <td align="center"><a href="https://github.com/capturemathan/PocketFeed"><img src="https://raw.githubusercontent.com/capturemathan/PocketFeed/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" width="100px;" alt=""/><br/><sub><b>PocketFeed</b></sub></a></td>
+    <td align="center"><a href="https://github.com/leoxshn/posidonLauncher"><img src="https://raw.githubusercontent.com/leoxshn/posidonLauncher/master/fastlane/metadata/android/en-US/images/icon.png" width="100px;" alt=""/><br/><sub><b>posidon launcher</b></sub></a></td>
   </tr>
 </table>
 <!-- markdownlint-enable -->
