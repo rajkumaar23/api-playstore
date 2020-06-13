@@ -60,6 +60,20 @@ https://api-playstore.rajkumaar.co.in/json?id=<YOUR-PACKAGE-ID>
 ```
 ![Dev Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/developer?id=in.co.rajkumaar.amritarepo&color=orange&style=for-the-badge)
 
+### API Used by
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/rajkumaar23/amrita-repository"><img src="https://raw.githubusercontent.com/rajkumaar23/amrita-repository/master/app/src/main/res/drawable/logosq.png" width="100px;" alt=""/><br/><sub><b>Amrita Repository</b></sub></a></td>
+    <td align="center"><a href="https://github.com/capturemathan/PocketFeed"><img src="https://raw.githubusercontent.com/capturemathan/PocketFeed/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" width="100px;" alt=""/><br/><sub><b>PocketFeed</b></sub></a></td>
+  </tr>
+</table>
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+
+> Submit a PR with your app details if you are using this API.
+
 ### License
 Find the license [here](LICENSE)
 
