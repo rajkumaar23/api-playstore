@@ -19,6 +19,11 @@ date_default_timezone_set("Asia/Kolkata");
 
 $app = AppFactory::create();
 
+$app->get('/', function (Request $request, Response $response) {
+    $response->getBody()->write(Parsedown::instance()->text(file_get_contents('README.md')));
+    return $response;
+});
+
 $app->get('/json', function (Request $request, Response $response) {
     $api = new API($request->getQueryParams()['id']);
     $response->getBody()->write(json_encode([

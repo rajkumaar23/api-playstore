@@ -6,6 +6,7 @@
         "symfony/css-selector": "^5.0",
         "ext-json": "*",
         "ext-mongodb": "*",
-        "mongodb/mongodb": "^1.6"
+        "mongodb/mongodb": "^1.6",
+        "erusev/parsedown": "^1.7"
     }
 }

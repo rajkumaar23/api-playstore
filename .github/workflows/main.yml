@@ -22,4 +22,5 @@ jobs:
         envs: LOCALPATH
         script: |
           cd $LOCALPATH
-          git pull origin master
+          composer install
+          git reset --hard && git pull origin master

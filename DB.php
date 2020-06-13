@@ -9,7 +9,6 @@ class DB
 
     public function __construct()
     {
-
         $client = new MongoDB\Client(getenv("PLAYSTORE_MONGO_URI"));
         $this->conn = $client->db->data;
     }
