@@ -1,0 +1,25 @@
+{
+  "name": "api-playstore",
+  "version": "1.0.0",
+  "description": "An unofficial play store API",
+  "main": "functions/server.js",
+  "scripts": {
+    "build": "netlify-lambda build api",
+    "start": "nodemon dev-server.js"
+  },
+  "repository": "git@github.com:rajkumaar23/playstore-api.git",
+  "author": "Rajkumar S <rajkumaar2304@icloud.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "crawler": "^1.2.2",
+    "express": "^4.17.1",
+    "mongodb": "^3.5.9",
+    "netlify-lambda": "^1.6.3",
+    "nodemon": "^2.0.4",
+    "serverless-http": "^2.5.0",
+    "showdown": "^1.9.1"
+  }
+}

@@ -2,7 +2,7 @@
 
 A helper tool that can be used in combination with shields.io for generating android app related badges with realtime values for your app's README file.
 
-![Playstore API CD](https://github.com/rajkumaar23/playstore-api/workflows/Playstore%20API%20CD/badge.svg)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/24ba080b-cb3b-42f5-ba62-97c546333aa8/deploy-status)](https://app.netlify.com/sites/practical-mcclintock-bfa26d/deploys)
 ![Say NO to hardcoding](https://img.shields.io/static/v1?label=Say%20NO%20to&message=HARD-CODING&color=red) 
 
 ## Usage
@@ -10,14 +10,14 @@ A helper tool that can be used in combination with shields.io for generating and
 Sample JSON with all details 
 ```json
 {
-  "package": "in.co.rajkumaar.amritarepo",
-  "appVersion": "4.2.2",
-  "appSize": "4.5M",
-  "noOfInstalls": "5,000+",
-  "lastUpdated": "March 31, 2020",
-  "rating": "4.7",
-  "noOfUsersRated": "767",
-  "developer": "Rajkumar S"
+  "packageID": "in.co.rajkumaar.amritarepo",
+  "developer": "Rajkumar S",
+  "installs": "5,000+",
+  "lastUpdated": "June 13, 2020",
+  "noOfUsersRated": "782 total",
+  "rating": "4.6",
+  "size": "4.7M",
+  "version": "4.3.3"
 }
 ```
 To get the above json, you can visit 
