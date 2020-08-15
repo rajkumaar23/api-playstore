@@ -110,7 +110,7 @@ app.get('/', async (req, res) => {
 app.get('/json', async (req, res) => {
     const packageID = req.query.id;
     const data = await getAppData(packageID);
-    if (data) {
+    if (data && !!req.query.forceUpdate !== true) {
         res.json(data);
         if (shouldUpdateCache(data['lastCached'])) {
             updateCacheAndDoTask(packageID);
@@ -124,7 +124,7 @@ app.get('/:type', async (req, res) => {
     const packageID = req.query.id;
     const type = convertType(req.params.type);
     const data = await getAppData(packageID);
-    if (data) {
+    if (data && !!req.query.forceUpdate !== true) {
         res.json(shieldsResponse(data, type));
         if (shouldUpdateCache(data['lastCached'])) {
             updateCacheAndDoTask(packageID);
