@@ -57,16 +57,26 @@ const getAppData = async (packageID) => {
 const convertType = (type) => type === 'downloads' ? 'installs' : type === 'package' ? 'packageID' : type;
 
 const scrapeFromHtml = (packageID, $) => {
-    const htlgb = $('.htlgb');
     const data = {};
+    const groupIdentifier = $('.hAyfc');
+    let length = groupIdentifier.length;
+    let dataMap = {
+        'Current Version': 'version',
+        'Installs': 'installs',
+        'Size': 'size',
+        'Updated': 'lastUpdated',
+        'Offered By': 'developer'
+    };
+    while (length--) {
+        const element = groupIdentifier.eq(length);
+        const firstChildText = element.children(':first-child').text();
+        if (dataMap[firstChildText]) {
+            data[dataMap[firstChildText]] = element.children(':nth-child(2)').text();
+        }
+    }
     data['packageID'] = packageID;
-    data['version'] = htlgb.eq(6).text();
-    data['installs'] = htlgb.eq(5).text();
-    data['size'] = htlgb.eq(3).text();
-    data['lastUpdated'] = htlgb.eq(1).text();
     data['rating'] = $('.BHMmbe').eq(0).text();
-    data['noOfUsersRated'] = $('.EymY4b').eq(0).text().match(/\d+/)[0];
-    data['developer'] = htlgb.eq(htlgb.length === 20 ? 17 : 18).text();
+    data['noOfUsersRated'] = $('.EymY4b').eq(0).text().split(' ')[0];
     data['lastCached'] = time();
     return data;
 }
