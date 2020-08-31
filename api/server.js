@@ -86,13 +86,19 @@ const updateCacheAndDoTask = (packageID, res = null, type = null) => {
     crawlerObj.queue({
         uri: getPlayStoreURL(packageID),
         callback: async (error, result, done) => {
-            if (!error) {
+            if (result.statusCode === 200) {
                 const data = scrapeFromHtml(packageID, result.$);
                 if (res) {
                     res.json(type ? shieldsResponse(data, type) : data);
                 }
                 const collection = await getCollection();
                 collection.updateOne({packageID: packageID}, {'$set': data}, {upsert: true});
+            } else {
+                if (res) {
+                    res.json({
+                        error: 'Invalid package ID'
+                    })
+                }
             }
             done();
         }
