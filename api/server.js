@@ -126,6 +126,22 @@ app.get('/json', async (req, res) => {
     }
 });
 
+app.get('/used-by', async (req, res) => {
+    const collection = await getCollection()
+    collection.estimatedDocumentCount({}, (error, count) => {
+        if (error) {
+            res.json({
+                error
+            })
+        }
+        res.json({
+            schemaVersion: 1,
+            label: "Used by",
+            message: `${count} apps`
+        })
+    })
+})
+
 app.get('/:type', async (req, res) => {
     const packageID = req.query.id;
     const type = convertType(req.params.type);
