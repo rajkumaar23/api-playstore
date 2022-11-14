@@ -61,7 +61,7 @@ const scrapeFromHtml = async (packageID) => {
         executablePath: await chromium.executablePath,
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        headless: chromium.headless,
+        headless: true,
         ignoreHTTPSErrors: true
     });
     let page = await browser.newPage();
