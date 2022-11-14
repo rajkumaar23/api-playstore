@@ -2,6 +2,9 @@
   command = "npm install && npm run build"
   functions = "functions/"
 
+[functions.render]
+  external_node_modules = ["chrome-aws-lambda"]
+
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/server/:splat"
