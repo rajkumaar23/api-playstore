@@ -62,7 +62,8 @@ const scrapeFromHtml = async (packageID) => {
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
         headless: true,
-        ignoreHTTPSErrors: true
+        ignoreHTTPSErrors: true,
+        ignoreDefaultArgs: ['--disable-extensions']
     });
     let page = await browser.newPage();
 
