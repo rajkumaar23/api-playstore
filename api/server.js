@@ -59,11 +59,11 @@ const convertType = (type) => type === 'downloads' ? 'installs' : type === 'pack
 const scrapeFromHtml = async (packageID) => {
     const browser = await chromium.puppeteer.launch({
         executablePath: await chromium.executablePath,
-        args: chromium.args,
+        args: Array.from(new Set([...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'])),
         defaultViewport: chromium.defaultViewport,
         headless: true,
         ignoreHTTPSErrors: true,
-        ignoreDefaultArgs: ['--disable-extensions']
+        ignoreDefaultArgs: ['--disable-extensions'],
     });
     let page = await browser.newPage();
 
