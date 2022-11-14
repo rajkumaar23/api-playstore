@@ -18,7 +18,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.5.9",
     "netlify-lambda": "^1.6.3",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.20",
     "puppeteer-core": "^19.2.0",
     "serverless-http": "^2.5.0",
     "showdown": "^1.9.1"
