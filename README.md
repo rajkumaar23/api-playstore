@@ -18,9 +18,6 @@ Sample JSON with all details
   "developer": "Rajkumar S",
   "installs": "5,000+",
   "lastUpdated": "June 13, 2020",
-  "noOfUsersRated": "782 total",
-  "rating": "4.6",
-  "size": "4.7M",
   "version": "4.3.3"
 }
 ```
@@ -34,7 +31,7 @@ For a badge on particular attribute, you can use
 ```markdown
 ![Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/<ATTRIBUTE-NAME>?id=<PACKAGE-ID>)
 ```
-The attributes should be one among : [downloads, package, version, size, lastUpdated, rating, noOfUsersRated, developer]
+The attributes should be one among : [downloads, package, version, lastUpdated, developer]
 
 You can customise the badge as you wish according to the shields.io style parameters. Find more info [here](https://shields.io/)
 
@@ -51,12 +48,6 @@ Version
 ![Version Badge](https://img.shields.io/endpoint?color=blue&url=https://api-playstore.rajkumaar.co.in/version?id=in.co.rajkumaar.amritarepo)
 ```
 ![Version Badge](https://img.shields.io/endpoint?color=blue&url=https://api-playstore.rajkumaar.co.in/version?id=in.co.rajkumaar.amritarepo)
-
-Rating
-```markdown
-![Rating Badge](https://img.shields.io/endpoint?color=blueviolet&style=flat-square&logo=android&url=https://api-playstore.rajkumaar.co.in/rating?id=in.co.rajkumaar.amritarepo)
-```
-![Rating Badge](https://img.shields.io/endpoint?color=blueviolet&style=flat-square&logo=android&url=https://api-playstore.rajkumaar.co.in/rating?id=in.co.rajkumaar.amritarepo)
 
 Developer
 ```markdown

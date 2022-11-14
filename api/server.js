@@ -8,7 +8,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const showdown = require('showdown');
-const Crawler = require("crawler");
+const puppeteer = require('puppeteer');
 const axios = require('axios');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -56,53 +56,69 @@ const getAppData = async (packageID) => {
 
 const convertType = (type) => type === 'downloads' ? 'installs' : type === 'package' ? 'packageID' : type;
 
-const scrapeFromHtml = (packageID, $) => {
-    const data = {};
-    const groupIdentifier = $('.hAyfc');
-    let length = groupIdentifier.length;
-    let dataMap = {
-        'Current Version': 'version',
-        'Installs': 'installs',
-        'Size': 'size',
-        'Updated': 'lastUpdated',
-        'Offered By': 'developer'
-    };
-    while (length--) {
-        const element = groupIdentifier.eq(length);
-        const firstChildText = element.children(':first-child').text();
-        if (dataMap[firstChildText]) {
-            data[dataMap[firstChildText]] = element.children(':nth-child(2)').text();
-        }
+const scrapeFromHtml = async (packageID) => {
+    const browser = await puppeteer.launch({headless: true});
+    let page = await browser.newPage();
+
+    await page.goto(getPlayStoreURL(packageID));
+    await page.waitForNetworkIdle();
+
+    const isError = await page.evaluate(() => {
+        return !!document.getElementById('error-section');
+    });
+
+    if (isError) {
+        return null;
     }
+
+    await page.waitForSelector(".VMq4uf");
+    await page.click('.VMq4uf button');
+
+    await page.waitForSelector(".sMUprd");
+
+    const data = await page.evaluate(() => {
+        const jobs = document.querySelectorAll(".sMUprd");
+        let data = {};
+        let dataMap = {
+            'Version': 'version',
+            'Downloads': 'installs',
+            'Updated on': 'lastUpdated',
+            'Offered by': 'developer'
+        };
+        jobs.forEach((item, idx) => {
+            if (idx < 8) {
+                const firstChildText = item.firstChild.textContent;
+                if (dataMap[firstChildText]) {
+                    if (firstChildText === "Downloads") {
+                        data[dataMap[firstChildText]] = item.children[1].textContent.split(" ")[0];
+                    } else {
+                        data[dataMap[firstChildText]] = item.children[1].textContent;
+                    }
+                }
+            }
+        });
+        return data;
+    });
+
+    await browser.close();
     data['packageID'] = packageID;
-    data['rating'] = $('.BHMmbe').eq(0).text();
-    data['noOfUsersRated'] = $('.EymY4b').eq(0).text().split(' ')[0];
     data['lastCached'] = time();
     return data;
 }
 
-const updateCacheAndDoTask = (packageID, res = null, type = null) => {
-    const crawlerObj = new Crawler();
-    crawlerObj.queue({
-        uri: getPlayStoreURL(packageID),
-        callback: async (error, result, done) => {
-            if (result.statusCode === 200) {
-                const data = scrapeFromHtml(packageID, result.$);
-                if (res) {
-                    res.json(type ? shieldsResponse(data, type) : data);
-                }
-                const collection = await getCollection();
-                collection.updateOne({packageID: packageID}, {'$set': data}, {upsert: true});
-            } else {
-                if (res) {
-                    res.json({
-                        error: 'Invalid package ID'
-                    })
-                }
-            }
-            done();
+const updateCacheAndDoTask = async (packageID, res = null, type = null) => {
+    const data = await scrapeFromHtml(packageID);
+    if (res) {
+        if (data) {
+            res.json(type ? shieldsResponse(data, type) : data);
+        } else {
+            res.json({
+                error: 'Invalid package ID'
+            })
         }
-    })
+    }
+    const collection = await getCollection();
+    collection.updateOne({packageID: packageID}, {'$set': data}, {upsert: true});
 }
 
 
