@@ -12,13 +12,15 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@sparticuz/chromium": "108",
     "axios": "^0.21.2",
     "body-parser": "^1.19.0",
+    "encoding": "^0.1.13",
     "express": "^4.17.1",
     "mongodb": "^3.5.9",
     "netlify-lambda": "^1.6.3",
     "nodemon": "^2.0.4",
-    "puppeteer": "^19.2.2",
+    "puppeteer-core": "^19.2.2",
     "serverless-http": "^2.5.0",
     "showdown": "^1.9.1"
   }

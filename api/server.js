@@ -8,7 +8,8 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const showdown = require('showdown');
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 const axios = require('axios');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -57,7 +58,13 @@ const getAppData = async (packageID) => {
 const convertType = (type) => type === 'downloads' ? 'installs' : type === 'package' ? 'packageID' : type;
 
 const scrapeFromHtml = async (packageID) => {
-    const browser = await puppeteer.launch({headless: true});
+    const browser = await puppeteer.launch({
+        executablePath: await chromium.executablePath,
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true
+    });
     let page = await browser.newPage();
 
     await page.goto(getPlayStoreURL(packageID));
