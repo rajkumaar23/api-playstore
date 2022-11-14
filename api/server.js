@@ -8,8 +8,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const showdown = require('showdown');
-const puppeteer = require("puppeteer-core");
-const chromium = require("@sparticuz/chromium");
+const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -58,7 +57,7 @@ const getAppData = async (packageID) => {
 const convertType = (type) => type === 'downloads' ? 'installs' : type === 'package' ? 'packageID' : type;
 
 const scrapeFromHtml = async (packageID) => {
-    const browser = await puppeteer.launch({
+    const browser = await chromium.puppeteer.launch({
         executablePath: await chromium.executablePath,
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
