@@ -117,8 +117,11 @@ const updateCacheAndDoTask = async (packageID, res = null, type = null) => {
             })
         }
     }
-    const collection = await getCollection();
-    collection.updateOne({packageID: packageID}, {'$set': data}, {upsert: true});
+
+    if (data) {
+        const collection = await getCollection();
+        collection.updateOne({packageID: packageID}, {'$set': data}, {upsert: true});
+    }
 }
 
 
