@@ -2,7 +2,7 @@
 
 A helper tool that can be used in combination with shields.io for generating android app related badges with realtime values for your app's README file.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/24ba080b-cb3b-42f5-ba62-97c546333aa8/deploy-status)](https://app.netlify.com/sites/practical-mcclintock-bfa26d/deploys)
+![Served hot from my Raspberry Pi](https://img.shields.io/static/v1?label=API%20is%20served%20hot%20from&message=my%20Raspberry%20Pi&color=blue)
 ![Say NO to hardcoding](https://img.shields.io/static/v1?label=Say%20NO%20to&message=HARD-CODING&color=red)
 
 ![Used By Badge](https://img.shields.io/endpoint?color=success&url=https://api-playstore.rajkumaar.co.in/used-by)
