@@ -129,7 +129,10 @@ const updateCacheAndDoTask = async (packageID, res = null, type = null) => {
 app.get('/', async (req, res) => {
     const converter = new showdown.Converter();
     const data = await axios.get('https://raw.githubusercontent.com/rajkumaar23/playstore-api/master/README.md', {responseType: 'text'});
-    res.send(converter.makeHtml(data.data));
+    const htmlContent = converter.makeHtml(data.data);
+    const plausibleSnippet = '<script defer data-domain="api-playstore.rajkumaar.co.in" src="https://plausible.pi.rajkumaar.co.in/js/script.js"></script>';
+    res.set('Content-Type', 'text/html');
+    res.send(plausibleSnippet + htmlContent);
 });
 
 app.get('/json', async (req, res) => {
