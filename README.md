@@ -1,12 +1,12 @@
 # Unofficial PlayStore API
 
-**Explore android app data from PlayStore with ease**
+**Explore android app metadata from PlayStore with ease!**
 
 [Available on RapidAPI](https://rapidapi.com/rajkumaar23-RK1kHf2Zl/api/app-details-from-playstore/details)
 
 ## Usage
 
-Retrieve comprehensive JSON data for any app by making a simple GET request:
+Retrieve comprehensive JSON data for any app from Google Play by making a simple GET request:
 ```
 https://api-playstore.rajkumaar.co.in/json?id=<YOUR-PACKAGE-ID>
 ```
@@ -43,9 +43,26 @@ Customize your README with dynamic badges for specific attributes. Utilize the f
 ```markdown
 ![Badge](https://img.shields.io/endpoint?url=https://api-playstore.rajkumaar.co.in/<ATTRIBUTE-NAME>?id=<PACKAGE-ID>)
 ```
-Supported attributes: [downloads, package, version, lastUpdated, developer, category, logo, banner, privacy_policy, screenshots, website, support_email]
+Supported attributes: 
+- packageID
+- name
+- version
+- downloads
+- downloadsExact
+- lastUpdated
+- launchDate
+- developer
+- description
+- screenshots
+- category
+- logo
+- banner
+- privacy_policy
+- latest_update_message
+- website
+- support_email
 
-Explore customization options based on shields.io style parameters. Learn more[here](https://shields.io/)
+Explore customization options based on shields.io style parameters. Learn more [here](https://shields.io/).
 
 ### Examples
 
