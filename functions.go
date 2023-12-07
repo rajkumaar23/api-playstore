@@ -57,6 +57,8 @@ type PlaystoreDataResponse struct {
 	Banner              string   `json:"banner"`
 	PrivacyPolicy       string   `json:"privacy_policy"`
 	LatestUpdateMessage string   `json:"latest_update_message"`
+	Website             string   `json:"website"`
+	SupportEmail        string   `json:"support_email"`
 }
 
 func GetPlaystoreData(request *http.Request) (PlaystoreDataResponse, int) {
@@ -111,6 +113,8 @@ func GetPlaystoreData(request *http.Request) (PlaystoreDataResponse, int) {
 				LatestUpdateMessage: data[1].([]interface{})[2].([]interface{})[144].([]interface{})[1].([]interface{})[1].(string),
 				Screenshots:         screenshots,
 				Version:             data[1].([]interface{})[2].([]interface{})[140].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
+				Website:             data[1].([]interface{})[2].([]interface{})[69].([]interface{})[0].([]interface{})[5].([]interface{})[2].(string),
+				SupportEmail:        data[1].([]interface{})[2].([]interface{})[69].([]interface{})[1].([]interface{})[0].(string),
 			}
 		}
 	})
