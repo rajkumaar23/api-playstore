@@ -4,8 +4,8 @@ type playstoreDataResponse struct {
 	PackageID           string   `json:"packageID"`
 	Name                string   `json:"name"`
 	Version             string   `json:"version"`
-	Installs            string   `json:"installs"`
-	InstallsExact       float64  `json:"installsExact"`
+	Downloads           string   `json:"downloads"`
+	DownloadsExact      float64  `json:"downloadsExact"`
 	LastUpdated         string   `json:"lastUpdated"`
 	LaunchDate          string   `json:"launchDate"`
 	Developer           string   `json:"developer"`
@@ -28,7 +28,7 @@ func newPlaystoreDataResponse(packageID string, data []interface{}) *playstoreDa
 		Category:            getStringFromData(data, 1, 2, 79, 0, 0, 0),
 		Developer:           getStringFromData(data, 1, 2, 37, 0),
 		Description:         getStringFromData(data, 1, 2, 72, 0, 1),
-		Installs:            getStringFromData(data, 1, 2, 13, 0),
+		Downloads:           getStringFromData(data, 1, 2, 13, 0),
 		Logo:                getStringFromData(data, 1, 2, 95, 0, 3, 2),
 		Banner:              getStringFromData(data, 1, 2, 96, 0, 3, 2),
 		PrivacyPolicy:       getStringFromData(data, 1, 2, 99, 0, 5, 2),
@@ -38,7 +38,7 @@ func newPlaystoreDataResponse(packageID string, data []interface{}) *playstoreDa
 		Website:             getStringFromData(data, 1, 2, 69, 0, 5, 2),
 		SupportEmail:        getStringFromData(data, 1, 2, 69, 1, 0),
 		Screenshots:         parseScreenshots(data),
-		InstallsExact:       getFloat64FromData(data, 1, 2, 13, 2),
+		DownloadsExact:      getFloat64FromData(data, 1, 2, 13, 2),
 	}
 }
 

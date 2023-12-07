@@ -7,6 +7,7 @@ import (
 func main() {
 	router := gin.Default()
 	router.GET("/", getREADME)
-	router.GET("/json", getPlaystoreJSON)
+	router.GET("/json", getAllData)
+	router.GET("/:key", getDataByKey)
 	router.Run("localhost:5003")
 }
