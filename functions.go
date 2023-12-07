@@ -59,61 +59,70 @@ type PlaystoreDataResponse struct {
 	LatestUpdateMessage string   `json:"latest_update_message"`
 }
 
-func GetPlaystoreData(request *http.Request) PlaystoreDataResponse {
+func GetPlaystoreData(request *http.Request) (PlaystoreDataResponse, int) {
 	c := colly.NewCollector()
+
 	var parsedPlaystoreData PlaystoreDataResponse
+	errorCode := -1
 
 	packageID := request.URL.Query().Get("id")
 
-	c.OnError(func(_ *colly.Response, err error) {
-		fmt.Println("Something went wrong: ", err)
+	c.OnError(func(collyResponse *colly.Response, err error) {
+		errorCode = collyResponse.StatusCode
 	})
 
 	c.OnHTML("script", func(e *colly.HTMLElement) {
-		if strings.Contains(e.Text, "AF_initDataCallback({key: 'ds:5'") {
-			if parsedPlaystoreData.PackageID != "" {
-				extractedText, err := extractText(e.Text)
-				if err != nil {
-					panic(err)
-				}
-				var data []interface{}
-				err = json.Unmarshal([]byte(extractedText), &data)
-				if err != nil {
-					fmt.Printf("could not unmarshal json: %s\n", err)
-					return
-				}
+		if strings.Contains(e.Text, "AF_initDataCallback({key: 'ds:5'") && parsedPlaystoreData.PackageID == "" {
 
-				var screenshots []string
-				for _, item := range data[1].([]interface{})[2].([]interface{})[78].([]interface{})[0].([]interface{}) {
-					screenshots = append(screenshots, item.([]interface{})[3].([]interface{})[2].(string))
-				}
+			extractedText, err := extractText(e.Text)
+			if err != nil {
+				panic(err)
+			}
+			var data []interface{}
+			err = json.Unmarshal([]byte(extractedText), &data)
+			if err != nil {
+				fmt.Printf("could not unmarshal json: %s\n", err)
+				return
+			}
 
-				var unquotedDescription string
-				unquotedDescription, err = strconv.Unquote(`"` + data[1].([]interface{})[2].([]interface{})[72].([]interface{})[0].([]interface{})[1].(string) + `"`)
-				if err != nil {
-					fmt.Printf("error unquoting app description : %v\n", err.Error())
-				}
+			var screenshots []string
+			for _, item := range data[1].([]interface{})[2].([]interface{})[78].([]interface{})[0].([]interface{}) {
+				screenshots = append(screenshots, item.([]interface{})[3].([]interface{})[2].(string))
+			}
 
-				parsedPlaystoreData = PlaystoreDataResponse{
-					PackageID:           packageID,
-					LaunchDate:          data[1].([]interface{})[2].([]interface{})[10].([]interface{})[0].(string),
-					Category:            data[1].([]interface{})[2].([]interface{})[79].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
-					Developer:           data[1].([]interface{})[2].([]interface{})[37].([]interface{})[0].(string),
-					Description:         unquotedDescription,
-					Installs:            data[1].([]interface{})[2].([]interface{})[13].([]interface{})[0].(string),
-					InstallsExact:       data[1].([]interface{})[2].([]interface{})[13].([]interface{})[2].(float64),
-					Logo:                data[1].([]interface{})[2].([]interface{})[95].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
-					Banner:              data[1].([]interface{})[2].([]interface{})[96].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
-					PrivacyPolicy:       data[1].([]interface{})[2].([]interface{})[99].([]interface{})[0].([]interface{})[5].([]interface{})[2].(string),
-					LastUpdated:         data[1].([]interface{})[2].([]interface{})[145].([]interface{})[0].([]interface{})[0].(string),
-					LatestUpdateMessage: data[1].([]interface{})[2].([]interface{})[144].([]interface{})[1].([]interface{})[1].(string),
-					Screenshots:         screenshots,
-					Version:             data[1].([]interface{})[2].([]interface{})[140].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
-				}
+			var unquotedDescription string
+			unquotedDescription, err = strconv.Unquote(`"` + data[1].([]interface{})[2].([]interface{})[72].([]interface{})[0].([]interface{})[1].(string) + `"`)
+			if err != nil {
+				fmt.Printf("error unquoting app description : %v\n", err.Error())
+			}
+
+			parsedPlaystoreData = PlaystoreDataResponse{
+				PackageID:           packageID,
+				LaunchDate:          data[1].([]interface{})[2].([]interface{})[10].([]interface{})[0].(string),
+				Category:            data[1].([]interface{})[2].([]interface{})[79].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
+				Developer:           data[1].([]interface{})[2].([]interface{})[37].([]interface{})[0].(string),
+				Description:         unquotedDescription,
+				Installs:            data[1].([]interface{})[2].([]interface{})[13].([]interface{})[0].(string),
+				InstallsExact:       data[1].([]interface{})[2].([]interface{})[13].([]interface{})[2].(float64),
+				Logo:                data[1].([]interface{})[2].([]interface{})[95].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
+				Banner:              data[1].([]interface{})[2].([]interface{})[96].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
+				PrivacyPolicy:       data[1].([]interface{})[2].([]interface{})[99].([]interface{})[0].([]interface{})[5].([]interface{})[2].(string),
+				LastUpdated:         data[1].([]interface{})[2].([]interface{})[145].([]interface{})[0].([]interface{})[0].(string),
+				LatestUpdateMessage: data[1].([]interface{})[2].([]interface{})[144].([]interface{})[1].([]interface{})[1].(string),
+				Screenshots:         screenshots,
+				Version:             data[1].([]interface{})[2].([]interface{})[140].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
 			}
 		}
 	})
 
 	c.Visit(fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID))
-	return parsedPlaystoreData
+	return parsedPlaystoreData, errorCode
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+func GenerateErrorResponse(error string) ErrorResponse {
+	return ErrorResponse{Error: error}
 }

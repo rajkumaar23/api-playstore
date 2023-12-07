@@ -22,10 +22,21 @@ func main() {
 
 	http.HandleFunc("/json", func(writer http.ResponseWriter, request *http.Request) {
 		if strings.Trim(request.URL.Query().Get("id"), "") == "" {
-			fmt.Fprint(writer, "'id' is mandatory!")
+			writer.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(writer).Encode(GenerateErrorResponse("package ID is mandatory!"))
 			return
 		}
-		res := GetPlaystoreData(request)
+
+		res, errCode := GetPlaystoreData(request)
+		if errCode != -1 {
+			writer.WriteHeader(errCode)
+			if errCode == 404 {
+				json.NewEncoder(writer).Encode(GenerateErrorResponse("package ID seems to be invalid"))
+			} else {
+				json.NewEncoder(writer).Encode(GenerateErrorResponse("an unexpected error occurred"))
+			}
+			return
+		}
 		json.NewEncoder(writer).Encode(res)
 	})
 
