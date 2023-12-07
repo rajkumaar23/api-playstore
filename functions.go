@@ -2,12 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
 
-	"github.com/gocolly/colly"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
@@ -25,6 +28,61 @@ func mdToHTML(md []byte) []byte {
 	return markdown.Render(doc, renderer)
 }
 
+func fetchHTML(packageID string) (string, int) {
+	playstoreURL := fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID)
+	res, err := http.Get(playstoreURL)
+	if err != nil {
+		log.Printf("error requesting playstore URL for id = %s, err = %s\n", packageID, err.Error())
+		return "", http.StatusInternalServerError
+	}
+
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		log.Printf("non-200 status code for id = %s, status = %s\n", packageID, res.Status)
+		return "", res.StatusCode
+	}
+
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Printf("error reading playstore response for id = %s, err = %s\n", packageID, err.Error())
+		return "", http.StatusInternalServerError
+	}
+
+	return string(bodyBytes), res.StatusCode
+}
+
+func parsePlaystoreData(packageID string, playstoreResponseBody string) (*playstoreDataResponse, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(playstoreResponseBody))
+	if err != nil {
+		log.Printf("error initialising goquery for id = %s, err = %s\n", packageID, err.Error())
+		return nil, err
+	}
+
+	scriptSelector := doc.Find("script")
+	for i := range scriptSelector.Nodes {
+		scriptElement := scriptSelector.Eq(i)
+		if strings.Contains(scriptElement.Text(), "AF_initDataCallback({key: 'ds:5'") {
+			extractedText, err := extractText(scriptElement.Text())
+			if err != nil {
+				log.Printf("regex matching failed for id = %s, err = %s\n", packageID, err.Error())
+				return nil, err
+			}
+			var data []interface{}
+			err = json.Unmarshal([]byte(extractedText), &data)
+			if err != nil {
+				log.Printf("json parsing failed for id = %s, err = %s\n", packageID, err.Error())
+				return nil, err
+			}
+
+			parsedPlaystoreData := newPlaystoreDataResponse(packageID, data)
+			return parsedPlaystoreData, nil
+		}
+	}
+
+	log.Printf("no matching <script> tag in HTML for id = %s\n", packageID)
+	return nil, errors.New("scraping failed - no matching <script>")
+}
+
 func extractText(input string) (string, error) {
 	pattern := `AF_initDataCallback\({key: 'ds:5', hash: '[^']*', data:(.*), sideChannel: {}}\);`
 	re, err := regexp.Compile(pattern)
@@ -39,89 +97,4 @@ func extractText(input string) (string, error) {
 
 	result := matches[1]
 	return result, nil
-}
-
-type PlaystoreDataResponse struct {
-	PackageID           string   `json:"packageID"`
-	Name                string   `json:"name"`
-	Version             string   `json:"version"`
-	Installs            string   `json:"installs"`
-	InstallsExact       float64  `json:"installsExact"`
-	LastUpdated         string   `json:"lastUpdated"`
-	LaunchDate          string   `json:"launchDate"`
-	Developer           string   `json:"developer"`
-	Description         string   `json:"description"`
-	Screenshots         []string `json:"screenshots"`
-	Category            string   `json:"category"`
-	Logo                string   `json:"logo"`
-	Banner              string   `json:"banner"`
-	PrivacyPolicy       string   `json:"privacy_policy"`
-	LatestUpdateMessage string   `json:"latest_update_message"`
-	Website             string   `json:"website"`
-	SupportEmail        string   `json:"support_email"`
-}
-
-func GetPlaystoreData(request *http.Request) (PlaystoreDataResponse, int) {
-	c := colly.NewCollector()
-
-	var parsedPlaystoreData PlaystoreDataResponse
-	errorCode := -1
-
-	packageID := request.URL.Query().Get("id")
-
-	c.OnError(func(collyResponse *colly.Response, err error) {
-		errorCode = collyResponse.StatusCode
-	})
-
-	c.OnHTML("script", func(e *colly.HTMLElement) {
-		if strings.Contains(e.Text, "AF_initDataCallback({key: 'ds:5'") && parsedPlaystoreData.PackageID == "" {
-
-			extractedText, err := extractText(e.Text)
-			if err != nil {
-				panic(err)
-			}
-			var data []interface{}
-			err = json.Unmarshal([]byte(extractedText), &data)
-			if err != nil {
-				fmt.Printf("could not unmarshal json: %s\n", err)
-				return
-			}
-
-			var screenshots []string
-			for _, item := range data[1].([]interface{})[2].([]interface{})[78].([]interface{})[0].([]interface{}) {
-				screenshots = append(screenshots, item.([]interface{})[3].([]interface{})[2].(string))
-			}
-
-			parsedPlaystoreData = PlaystoreDataResponse{
-				PackageID:     packageID,
-				LaunchDate:    data[1].([]interface{})[2].([]interface{})[10].([]interface{})[0].(string),
-				Name:          data[1].([]interface{})[2].([]interface{})[0].([]interface{})[0].(string),
-				Category:      data[1].([]interface{})[2].([]interface{})[79].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
-				Developer:     data[1].([]interface{})[2].([]interface{})[37].([]interface{})[0].(string),
-				Description:   data[1].([]interface{})[2].([]interface{})[72].([]interface{})[0].([]interface{})[1].(string),
-				Installs:      data[1].([]interface{})[2].([]interface{})[13].([]interface{})[0].(string),
-				InstallsExact: data[1].([]interface{})[2].([]interface{})[13].([]interface{})[2].(float64),
-				Logo:          data[1].([]interface{})[2].([]interface{})[95].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
-				Banner:        data[1].([]interface{})[2].([]interface{})[96].([]interface{})[0].([]interface{})[3].([]interface{})[2].(string),
-				PrivacyPolicy: data[1].([]interface{})[2].([]interface{})[99].([]interface{})[0].([]interface{})[5].([]interface{})[2].(string),
-				LastUpdated:   data[1].([]interface{})[2].([]interface{})[145].([]interface{})[0].([]interface{})[0].(string),
-				// LatestUpdateMessage: data[1].([]interface{})[2].([]interface{})[144].([]interface{})[1].([]interface{})[1].(string),
-				Screenshots:  screenshots,
-				Version:      data[1].([]interface{})[2].([]interface{})[140].([]interface{})[0].([]interface{})[0].([]interface{})[0].(string),
-				Website:      data[1].([]interface{})[2].([]interface{})[69].([]interface{})[0].([]interface{})[5].([]interface{})[2].(string),
-				SupportEmail: data[1].([]interface{})[2].([]interface{})[69].([]interface{})[1].([]interface{})[0].(string),
-			}
-		}
-	})
-
-	c.Visit(fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID))
-	return parsedPlaystoreData, errorCode
-}
-
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
-
-func GenerateErrorResponse(error string) ErrorResponse {
-	return ErrorResponse{Error: error}
 }
