@@ -21,6 +21,7 @@ func main() {
 	})
 
 	http.HandleFunc("/json", func(writer http.ResponseWriter, request *http.Request) {
+		writer.Header().Add("Content-Type", "application/json")
 		if strings.Trim(request.URL.Query().Get("id"), "") == "" {
 			writer.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(writer).Encode(GenerateErrorResponse("package ID is mandatory!"))
