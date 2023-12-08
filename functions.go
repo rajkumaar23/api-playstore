@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"os/exec"
 	"regexp"
 	"strings"
 	"time"
@@ -16,6 +16,7 @@ import (
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/redis/go-redis/v9"
+	"github.com/rollbar/rollbar-go"
 )
 
 func mdToHTML(md []byte) []byte {
@@ -35,31 +36,31 @@ func fetchHTML(packageID string) (string, int) {
 	if err == nil {
 		return cachedHTML, http.StatusOK
 	} else if err != nil && err != redis.Nil {
-		log.Printf("redis error for id = %s", packageID)
+		rollbar.Warning(fmt.Sprintf("redis error for id = %s", packageID))
 	}
 
 	playstoreURL := fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID)
 	res, err := http.Get(playstoreURL)
 	if err != nil {
-		log.Printf("error requesting playstore URL for id = %s, err = %s\n", packageID, err.Error())
+		rollbar.Error(fmt.Sprintf("error requesting playstore URL for id = %s, err = %s\n", packageID, err.Error()))
 		return "", http.StatusInternalServerError
 	}
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		log.Printf("non-200 status code for id = %s, status = %s\n", packageID, res.Status)
+		rollbar.Error(fmt.Sprintf("non-200 status code for id = %s, status = %s\n", packageID, res.Status))
 		return "", res.StatusCode
 	}
 
 	bodyBytes, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Printf("error reading playstore response for id = %s, err = %s\n", packageID, err.Error())
+		rollbar.Error(fmt.Sprintf("error reading playstore response for id = %s, err = %s\n", packageID, err.Error()))
 		return "", http.StatusInternalServerError
 	}
 
 	err = rdb.Set(ctx, packageID, string(bodyBytes), time.Hour).Err()
 	if err != nil {
-		log.Printf("redis set key failed for id = %s, err = %s", packageID, err.Error())
+		rollbar.Warning(fmt.Sprintf("redis set key failed for id = %s, err = %s", packageID, err.Error()))
 	}
 	return string(bodyBytes), res.StatusCode
 }
@@ -67,7 +68,7 @@ func fetchHTML(packageID string) (string, int) {
 func parsePlaystoreData(packageID string, playstoreResponseBody string) (*playstoreDataResponse, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(playstoreResponseBody))
 	if err != nil {
-		log.Printf("error initialising goquery for id = %s, err = %s\n", packageID, err.Error())
+		rollbar.Error(fmt.Sprintf("error initialising goquery for id = %s, err = %s\n", packageID, err.Error()))
 		return nil, err
 	}
 
@@ -77,13 +78,13 @@ func parsePlaystoreData(packageID string, playstoreResponseBody string) (*playst
 		if strings.Contains(scriptElement.Text(), "AF_initDataCallback({key: 'ds:5'") {
 			extractedText, err := extractText(scriptElement.Text())
 			if err != nil {
-				log.Printf("regex matching failed for id = %s, err = %s\n", packageID, err.Error())
+				rollbar.Error(fmt.Sprintf("regex matching failed for id = %s, err = %s\n", packageID, err.Error()))
 				return nil, err
 			}
 			var data []interface{}
 			err = json.Unmarshal([]byte(extractedText), &data)
 			if err != nil {
-				log.Printf("json parsing failed for id = %s, err = %s\n", packageID, err.Error())
+				rollbar.Error(fmt.Sprintf("json parsing failed for id = %s, err = %s\n", packageID, err.Error()))
 				return nil, err
 			}
 
@@ -92,7 +93,7 @@ func parsePlaystoreData(packageID string, playstoreResponseBody string) (*playst
 		}
 	}
 
-	log.Printf("no matching <script> tag in HTML for id = %s\n", packageID)
+	rollbar.Critical(fmt.Sprintf("no matching <script> tag in HTML for id = %s\n", packageID))
 	return nil, errors.New("scraping failed - no matching <script>")
 }
 
@@ -110,4 +111,16 @@ func extractText(input string) (string, error) {
 
 	result := matches[1]
 	return result, nil
+}
+
+func getCurrentGitHeadHash() string {
+	cmd := exec.Command("git", "rev-parse", "--short", "HEAD")
+	stdout, err := cmd.Output()
+
+	if err != nil {
+		rollbar.Error(fmt.Sprintf("error while reading git HEAD hash : %s\n", err.Error()))
+		return "undefined"
+	}
+
+	return string(stdout)
 }

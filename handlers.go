@@ -30,13 +30,13 @@ func getAllData(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "package id is invalid"})
 		return
 	} else if statusCode != 200 {
-		c.IndentedJSON(http.StatusBadGateway, gin.H{"message": "an unexpected error occurred"})
+		c.IndentedJSON(http.StatusBadGateway, gin.H{"message": "an internal error occurred"})
 		return
 	}
 
 	parsedPlaystoreData, err := parsePlaystoreData(packageID, resBody)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an unexpected error occurred", "error": err.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an internal error occurred"})
 		return
 	}
 
@@ -54,13 +54,13 @@ func getDataByKey(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "package id is invalid"})
 		return
 	} else if statusCode != 200 {
-		c.IndentedJSON(http.StatusBadGateway, gin.H{"message": "an unexpected error occurred"})
+		c.IndentedJSON(http.StatusBadGateway, gin.H{"message": "an internal error occurred"})
 		return
 	}
 
 	parsedPlaystoreData, err := parsePlaystoreData(packageID, resBody)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an unexpected error occurred", "error": err.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "an internal error occurred"})
 		return
 	}
 
