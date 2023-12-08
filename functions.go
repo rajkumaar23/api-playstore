@@ -9,11 +9,13 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
+	"github.com/redis/go-redis/v9"
 )
 
 func mdToHTML(md []byte) []byte {
@@ -29,6 +31,13 @@ func mdToHTML(md []byte) []byte {
 }
 
 func fetchHTML(packageID string) (string, int) {
+	cachedHTML, err := rdb.Get(ctx, packageID).Result()
+	if err == nil {
+		return cachedHTML, http.StatusOK
+	} else if err != nil && err != redis.Nil {
+		log.Printf("redis error for id = %s", packageID)
+	}
+
 	playstoreURL := fmt.Sprintf("https://play.google.com/store/apps/details?id=%s", packageID)
 	res, err := http.Get(playstoreURL)
 	if err != nil {
@@ -48,6 +57,10 @@ func fetchHTML(packageID string) (string, int) {
 		return "", http.StatusInternalServerError
 	}
 
+	err = rdb.Set(ctx, packageID, string(bodyBytes), time.Hour).Err()
+	if err != nil {
+		log.Printf("redis set key failed for id = %s, err = %s", packageID, err.Error())
+	}
 	return string(bodyBytes), res.StatusCode
 }
 
