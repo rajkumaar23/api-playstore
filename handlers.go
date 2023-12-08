@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -66,8 +67,8 @@ func getDataByKey(c *gin.Context) {
 	key := c.Params.ByName("key")
 	val := reflect.ValueOf(*parsedPlaystoreData)
 	for i := 0; i < val.Type().NumField(); i++ {
-		if key == val.Type().Field(i).Tag.Get("json") {
-			c.IndentedJSON(http.StatusOK, gin.H{"schemaVersion": 1, "label": key, "message": val.Field(i).Interface()})
+		if strings.EqualFold(key, val.Type().Field(i).Tag.Get("json")) {
+			c.IndentedJSON(http.StatusOK, gin.H{"schemaVersion": 1, "label": val.Type().Field(i).Tag.Get("api"), "message": val.Field(i).Interface()})
 			return
 		}
 	}

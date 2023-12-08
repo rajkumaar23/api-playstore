@@ -1,23 +1,23 @@
 package main
 
 type playstoreDataResponse struct {
-	PackageID           string   `json:"packageID"`
-	Name                string   `json:"name"`
-	Version             string   `json:"version"`
-	Downloads           string   `json:"downloads"`
-	DownloadsExact      float64  `json:"downloadsExact"`
-	LastUpdated         string   `json:"lastUpdated"`
-	LaunchDate          string   `json:"launchDate"`
-	Developer           string   `json:"developer"`
-	Description         string   `json:"description"`
-	Screenshots         []string `json:"screenshots"`
-	Category            string   `json:"category"`
-	Logo                string   `json:"logo"`
-	Banner              string   `json:"banner"`
-	PrivacyPolicy       string   `json:"privacy_policy"`
-	LatestUpdateMessage string   `json:"latest_update_message"`
-	Website             string   `json:"website"`
-	SupportEmail        string   `json:"support_email"`
+	PackageID           string   `json:"packageID" api:"Package ID"`
+	Name                string   `json:"name" api:"Name"`
+	Version             string   `json:"version" api:"Version"`
+	Downloads           string   `json:"downloads" api:"Downloads"`
+	DownloadsExact      float64  `json:"downloadsExact" api:"Downloads"`
+	LastUpdated         string   `json:"lastUpdated" api:"Last Updated On"`
+	LaunchDate          string   `json:"launchDate" api:"Launched On"`
+	Developer           string   `json:"developer" api:"Developer"`
+	Description         string   `json:"description" api:"Description"`
+	Screenshots         []string `json:"screenshots" api:"Screenshots"`
+	Category            string   `json:"category" api:"Category"`
+	Logo                string   `json:"logo" api:"Logo"`
+	Banner              string   `json:"banner" api:"Banner"`
+	PrivacyPolicy       string   `json:"privacy_policy" api:"Privacy Policy"`
+	LatestUpdateMessage string   `json:"latest_update_message" api:"Latest Update Message"`
+	Website             string   `json:"website" api:"Website"`
+	SupportEmail        string   `json:"support_email" api:"Support Email"`
 }
 
 func newPlaystoreDataResponse(packageID string, data []interface{}) *playstoreDataResponse {
