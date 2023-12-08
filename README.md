@@ -34,7 +34,9 @@ Sample JSON response with all possible details:
   "privacy_policy": "http://rajkumaar.co.in/privacy.txt",
   "latest_update_message": "No user facing changes in this update, but it contains a mandatory under-the-hood change required by the Google Play Store.",
   "website": "http://rajkumaar.co.in",
-  "support_email": "rajkumaar2304@icloud.com"
+  "support_email": "rajkumaar2304@icloud.com",
+  "rating": "4.686",
+  "noOfUsersRated": "821"
 }
 ```
 
@@ -61,6 +63,8 @@ Supported attributes:
 - latest_update_message
 - website
 - support_email
+- rating
+- noOfUsersRated
 
 Explore customization options based on shields.io style parameters. Learn more [here](https://shields.io/).
 
