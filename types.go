@@ -18,6 +18,8 @@ type playstoreDataResponse struct {
 	LatestUpdateMessage string   `json:"latest_update_message" api:"Latest Update Message"`
 	Website             string   `json:"website" api:"Website"`
 	SupportEmail        string   `json:"support_email" api:"Support Email"`
+	Rating              string   `json:"rating" api:"Rating"`
+	NoOfUsersRated      string   `json:"noOfUsersRated" api:"No of users rated"`
 }
 
 func newPlaystoreDataResponse(packageID string, data []interface{}) *playstoreDataResponse {
@@ -39,6 +41,8 @@ func newPlaystoreDataResponse(packageID string, data []interface{}) *playstoreDa
 		SupportEmail:        getStringFromData(data, 1, 2, 69, 1, 0),
 		Screenshots:         parseScreenshots(data),
 		DownloadsExact:      getFloat64FromData(data, 1, 2, 13, 2),
+		Rating:              getStringFromData(data, 1, 2, 51, 0, 0),
+		NoOfUsersRated:      getStringFromData(data, 1, 2, 51, 2, 0),
 	}
 }
 
