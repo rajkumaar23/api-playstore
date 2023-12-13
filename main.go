@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -35,7 +36,7 @@ func main() {
 	defer rdb.Close()
 	_, err = rdb.Ping(ctx).Result()
 	if err != nil {
-		rollbar.Critical("redis connection was refused; addr = %s\n", rdb.Options().Addr)
+		rollbar.Critical(fmt.Sprintf("redis connection was refused; addr = %s", rdb.Options().Addr))
 		panic("redis connection failed")
 	}
 
@@ -44,5 +45,10 @@ func main() {
 	router.GET("/", getREADME)
 	router.GET("/json", getAllData)
 	router.GET("/:key", getDataByKey)
-	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("SERVER_PORT")))
+	
+	err = endless.ListenAndServe(fmt.Sprintf("localhost:%s", os.Getenv("SERVER_PORT")), router)
+	if err != nil {
+		rollbar.Critical(fmt.Sprintf("http server failed to start - %v\n", err.Error()))
+		panic("http server failed to start")
+	}
 }
