@@ -48,7 +48,7 @@ func fetchHTML(packageID string) (string, int) {
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		rollbar.Error(fmt.Sprintf("non-200 status code for id = %s, status = %s\n", packageID, res.Status))
+		rollbar.Info(fmt.Sprintf("non-200 status code for id = %s, status = %s\n", packageID, res.Status))
 		return "", res.StatusCode
 	}
 
