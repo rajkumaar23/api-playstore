@@ -43,9 +43,6 @@ func main() {
 		panic("redis connection failed")
 	}
 
-	notifyCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
 	gin.SetMode(os.Getenv("GIN_MODE"))
 	router := gin.Default()
 	router.GET("/", getREADME)
@@ -65,18 +62,19 @@ func main() {
 		}
 	}()
 
-	// Listen for the interrupt signal.
-	<-notifyCtx.Done()
-
-	// Restore default behavior on the interrupt signal and notify user of shutdown.
-	stop()
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal, 1)
+	
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down server...")
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling
-	notifyCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := srv.Shutdown(notifyCtx); err != nil {
+	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal("Server forced to shutdown: ", err)
 	}
 
