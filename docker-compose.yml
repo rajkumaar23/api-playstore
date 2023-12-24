@@ -1,8 +1,7 @@
 version: '3'
 
 services:
-  app:
-    image: golang:latest
+  api-playstore:
     image: ghcr.io/rajkumaar23/api-playstore:main
     volumes:
       - .env:/app/.env
