@@ -62,6 +62,7 @@ jobs:
             User $SSH_USER
             IdentityFile ~/.ssh/priv.key
             StrictHostKeyChecking no
+            SetEnv APP_DIR=$APP_DIR
           END
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
