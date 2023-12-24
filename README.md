@@ -2,7 +2,7 @@
 
 **Explore android app metadata from PlayStore with ease!**
 
-[![build](https://github.com/rajkumaar23/api-playstore/actions/workflows/build.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/build.yaml)
+[![build](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml)
 
 ## Usage
 
