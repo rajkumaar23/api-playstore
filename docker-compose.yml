@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    image: golang:latest
+    image: ghcr.io/rajkumaar23/api-playstore:main
+    volumes:
+      - .env:/app/.env
+    depends_on:
+      - redis
+    networks:
+      - api-playstore-network
+
+  redis:
+    image: redis:latest
+    networks:
+      - api-playstore-network
+
+networks:
+  api-playstore-network:
+    driver: bridge
