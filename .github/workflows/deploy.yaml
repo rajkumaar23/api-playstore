@@ -62,20 +62,18 @@ jobs:
             User $SSH_USER
             IdentityFile ~/.ssh/priv.key
             StrictHostKeyChecking no
-            SetEnv APP_DIR=$APP_DIR
           END
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
-          APP_DIR: ${{ secrets.APP_DIR }}
 
       - name: Stop the containers
-        run: ssh -t pi 'cd $APP_DIR && docker compose down'
+        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose down'
 
       - name: Update the images
-        run: ssh -t pi 'cd $APP_DIR && docker compose pull'
+        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose pull'
 
       - name: Restart the containers
-        run: ssh -t pi 'cd $APP_DIR && docker compose up -d --remove-orphans'
+        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose up -d --remove-orphans'
