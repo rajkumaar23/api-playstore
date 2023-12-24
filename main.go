@@ -47,29 +47,5 @@ func main() {
 	router.GET("/json", getAllData)
 	router.GET("/:key", getDataByKey)
 
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")),
-		Handler: router,
-	}
-
-	quit := make(chan os.Signal)
-	signal.Notify(quit, os.Interrupt)
-
-	go func() {
-		<-quit
-		log.Println("receive interrupt signal")
-		if err := srv.Close(); err != nil {
-			log.Fatal("Server Close:", err)
-		}
-	}()
-
-	if err := srv.ListenAndServe(); err != nil {
-		if err == http.ErrServerClosed {
-			log.Println("Server closed under request")
-		} else {
-			log.Fatal("Server closed unexpectedly")
-		}
-	}
-
-	log.Println("Server exiting")
+	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("SERVER_PORT")))
 }
