@@ -2,7 +2,7 @@
 
 **Explore android app metadata from PlayStore with ease!**
 
-[Available on RapidAPI](https://rapidapi.com/rajkumaar23-RK1kHf2Zl/api/app-details-from-playstore/details)
+[![build](https://github.com/rajkumaar23/api-playstore/actions/workflows/build.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/build.yaml)
 
 ## Usage
 
