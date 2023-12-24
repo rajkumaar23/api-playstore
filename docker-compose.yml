@@ -6,6 +6,8 @@ services:
     image: ghcr.io/rajkumaar23/api-playstore:main
     volumes:
       - .env:/app/.env
+    ports:
+      - "5003:5003"
     depends_on:
       - redis
     networks:
