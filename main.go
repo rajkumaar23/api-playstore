@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"os/signal"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
