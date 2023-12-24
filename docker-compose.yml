@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  api-playstore:
+  app:
     image: ghcr.io/rajkumaar23/api-playstore:main
     volumes:
       - .env:/app/.env
@@ -14,6 +14,8 @@ services:
 
   redis:
     image: redis:latest
+    ports:
+      - "6379:6379"
     networks:
       - api-playstore-network
 

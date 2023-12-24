@@ -45,5 +45,5 @@ func main() {
 	router.GET("/json", getAllData)
 	router.GET("/:key", getDataByKey)
 
-	router.Run(fmt.Sprintf("localhost:%s", os.Getenv("SERVER_PORT")))
+	router.Run(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")))
 }
