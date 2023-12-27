@@ -69,11 +69,5 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
 
-      - name: Stop the containers
-        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose down'
-
-      - name: Update the images
-        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose pull'
-
-      - name: Restart the containers
-        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose up -d --remove-orphans'
+      - name: Update and restart the containers
+        run: ssh -t pi 'cd ${{ secrets.APP_DIR }} && docker compose pull && docker compose down && docker compose up -d --remove-orphans'
