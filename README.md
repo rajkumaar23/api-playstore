@@ -92,6 +92,10 @@ Developer
 ```
 ![Dev Badge](https://img.shields.io/endpoint?color=orange&style=for-the-badge&url=https://api-playstore.rajkumaar.co.in/developer?id=com.openai.chatgpt)
 
+### Known Issues
+
+- The API may respond with an empty `rating` because the ratings on Google Play Store are specific to a country/region and the API is only able to fetch ratings that are local to the United States.
+
 ### License
 Find the license [here](LICENSE)
 
