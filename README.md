@@ -94,7 +94,7 @@ Developer
 
 ### Known Issues
 
-- The API may respond with an empty `rating` because the ratings on Google Play Store are specific to a country/region and the API is only able to fetch ratings that are local to the United States.
+- The API may respond with a **0** for `rating`/`noOfUsersRated` because the ratings on Google Play Store are specific to a country/region and the API is only able to fetch ratings that are local to the United States.
 
 ### License
 Find the license [here](LICENSE)
