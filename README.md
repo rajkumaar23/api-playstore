@@ -3,7 +3,6 @@
 **Explore android app metadata from PlayStore with ease!**
 
 [![Build & Deploy](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml)
-
 [![Nightly Test](https://github.com/rajkumaar23/api-playstore/actions/workflows/test.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/test.yaml)
 
 ## Usage
