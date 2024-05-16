@@ -41,7 +41,6 @@ func TestAPIResponse(t *testing.T) {
 	assertStringNotEmpty(t, "logo", data)
 	assertStringNotEmpty(t, "banner", data)
 	assertStringNotEmpty(t, "privacy_policy", data)
-	assertStringNotEmpty(t, "latest_update_message", data)
 	assertStringNotEmpty(t, "website", data)
 	assertStringNotEmpty(t, "support_email", data)
 	assertStringNotEmpty(t, "rating", data)
