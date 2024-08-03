@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -40,10 +41,13 @@ func main() {
 	}
 
 	gin.SetMode(os.Getenv("GIN_MODE"))
+	
 	router := gin.Default()
+	router.Use(cors.Default())
+
 	router.GET("/", getREADME)
 	router.GET("/json", getAllData)
 	router.GET("/:key", getDataByKey)
-
+	
 	router.Run(fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")))
 }
