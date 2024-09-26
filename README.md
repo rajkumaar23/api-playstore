@@ -5,8 +5,6 @@
 [![Build & Deploy](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/deploy.yaml)
 [![Nightly Test](https://github.com/rajkumaar23/api-playstore/actions/workflows/test.yaml/badge.svg)](https://github.com/rajkumaar23/api-playstore/actions/workflows/test.yaml)
 
-[![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.rajkumaar.co.in/public-dashboards/8a871250889448038177cfef918ef660)
-
 ## Usage
 
 Retrieve comprehensive JSON data for any app from Google Play by making a simple GET request:
