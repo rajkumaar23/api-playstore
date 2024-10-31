@@ -3,11 +3,20 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const apiURL = "https://api-playstore.rajkumaar.co.in/json?id=com.dd.doordash"
+
+func isValidDate(date string) error {
+	_, err := time.Parse("Jan 02, 2006", date)
+	return err
+}
 
 func TestAPIResponse(t *testing.T) {
 	resp, err := http.Get(apiURL)
@@ -22,41 +31,42 @@ func TestAPIResponse(t *testing.T) {
 		return
 	}
 
-	var data map[string]interface{}
+	var data playstoreDataResponse
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		t.Errorf("Failed to decode JSON response: %v", err)
 		return
 	}
 
-	assertStringNotEmpty(t, "packageID", data)
-	assertStringNotEmpty(t, "name", data)
-	assertStringNotEmpty(t, "version", data)
-	assertStringNotEmpty(t, "downloads", data)
-	assertIntGreaterThan(t, "downloadsExact", data, 0)
-	assertStringNotEmpty(t, "lastUpdated", data)
-	assertStringNotEmpty(t, "launchDate", data)
-	assertStringNotEmpty(t, "developer", data)
-	assertStringNotEmpty(t, "description", data)
-	assertStringNotEmpty(t, "category", data)
-	assertStringNotEmpty(t, "logo", data)
-	assertStringNotEmpty(t, "banner", data)
-	assertStringNotEmpty(t, "privacy_policy", data)
-	assertStringNotEmpty(t, "website", data)
-	assertStringNotEmpty(t, "support_email", data)
-	assertStringNotEmpty(t, "rating", data)
-	assertStringNotEmpty(t, "noOfUsersRated", data)
-}
+	// Assertions for each field
+	assert.Equal(t, data.PackageID, "com.dd.doordash")
+	assert.Equal(t, data.Name, "DoorDash - Food Delivery")
+	assert.GreaterOrEqual(t, data.Version, "15.188.6")
+	assert.Equal(t, data.Downloads, "50,000,000+")
+	assert.GreaterOrEqual(t, data.DownloadsExact, 67209570.0)
 
-func assertStringNotEmpty(t *testing.T, key string, data map[string]interface{}) {
-	val, ok := data[key].(string)
-	if !ok || strings.TrimSpace(val) == "" {
-		t.Errorf("%s is not a non-empty string", key)
-	}
-}
+	err = isValidDate(data.LastUpdated)
+	assert.Nil(t, err, err)
 
-func assertIntGreaterThan(t *testing.T, key string, data map[string]interface{}, threshold int) {
-	val, ok := data[key].(float64)
-	if !ok || int(val) <= threshold {
-		t.Errorf("%s is not an integer greater than %d", key, threshold)
+	assert.Equal(t, data.LaunchDate, "Mar 26, 2015")
+	assert.Equal(t, data.Developer, "DoorDash")
+	assert.True(t, strings.Contains(data.Description, "Delivery anywhere you are."))
+	assert.Equal(t, data.Category, "Food \u0026 Drink")
+
+	_, err = url.ParseRequestURI(data.Logo)
+	assert.Nil(t, err)
+
+	_, err = url.ParseRequestURI(data.Banner)
+	assert.Nil(t, err)
+
+	for _, s := range data.Screenshots {
+		_, err = url.ParseRequestURI(s)
+		assert.Nil(t, err)
 	}
+
+	assert.Equal(t, data.PrivacyPolicy, "https://www.doordash.com/privacy/")
+	assert.Greater(t, len(data.LatestUpdateMessage), 0)
+	assert.Equal(t, data.Website, "https://www.doordash.com/")
+	assert.Equal(t, data.SupportEmail, "support@doordash.com")
+	assert.True(t, data.Rating > "0.0" && data.Rating < "5.0")
+	assert.GreaterOrEqual(t, data.NoOfUsersRated, "4,712,796")
 }
