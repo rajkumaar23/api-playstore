@@ -14,7 +14,7 @@ import (
 const apiURL = "https://api-playstore.rajkumaar.co.in/json?id=com.dd.doordash"
 
 func isValidDate(date string) error {
-	_, err := time.Parse("Jan 02, 2006", date)
+	_, err := time.Parse("Jan 2, 2006", date)
 	return err
 }
 
