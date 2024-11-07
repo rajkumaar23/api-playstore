@@ -35,7 +35,7 @@ func fetchHTML(packageID string) (string, int) {
 	cachedHTML, err := rdb.Get(ctx, packageID).Result()
 	if err == nil {
 		return cachedHTML, http.StatusOK
-	} else if err != nil && err != redis.Nil {
+	} else if err != redis.Nil {
 		rollbar.Warning(fmt.Sprintf("redis error for id = %s", packageID))
 	}
 
