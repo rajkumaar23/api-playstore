@@ -14,10 +14,10 @@ type playstoreDataResponse struct {
 	Category            string   `json:"category" api:"Category"`
 	Logo                string   `json:"logo" api:"Logo"`
 	Banner              string   `json:"banner" api:"Banner"`
-	PrivacyPolicy       string   `json:"privacy_policy" api:"Privacy Policy"`
-	LatestUpdateMessage string   `json:"latest_update_message" api:"Latest Update Message"`
+	PrivacyPolicy       string   `json:"privacyPolicy" api:"Privacy Policy"`
+	LatestUpdateMessage string   `json:"latestUpdateMessage" api:"Latest Update Message"`
 	Website             string   `json:"website" api:"Website"`
-	SupportEmail        string   `json:"support_email" api:"Support Email"`
+	SupportEmail        string   `json:"supportEmail" api:"Support Email"`
 	Rating              string   `json:"rating" api:"Rating"`
 	NoOfUsersRated      string   `json:"noOfUsersRated" api:"No of users rated"`
 }
