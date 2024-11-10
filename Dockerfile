@@ -9,6 +9,6 @@ RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 RUN mkdir /app
 COPY . /app/
 WORKDIR /app
-RUN go build -o api-playstore
+RUN go build -o playstore-api
 
-CMD ["./api-playstore"]
+CMD ["./playstore-api"]

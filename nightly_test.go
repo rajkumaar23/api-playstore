@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const apiURL = "https://api-playstore.rajkumaar.co.in/json?id=com.dd.doordash"
+const apiURL = "https://api.playstore.rajkumaar.co.in/json?id=com.dd.doordash"
 
 func isValidDate(date string) error {
 	_, err := time.Parse("Jan 2, 2006", date)

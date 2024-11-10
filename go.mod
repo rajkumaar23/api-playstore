@@ -1,4 +1,4 @@
-module api-playstore
+module playstore-api
 
 go 1.20
 
