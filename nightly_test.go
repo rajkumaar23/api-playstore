@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -38,35 +39,35 @@ func TestAPIResponse(t *testing.T) {
 	}
 
 	// Assertions for each field
-	assert.Equal(t, data.PackageID, "com.dd.doordash")
-	assert.Equal(t, data.Name, "DoorDash - Food Delivery")
-	assert.GreaterOrEqual(t, data.Version, "15.188.6")
-	assert.Equal(t, data.Downloads, "50,000,000+")
-	assert.GreaterOrEqual(t, data.DownloadsExact, 67209570.0)
+	assert.Equal(t, data.PackageID, "com.dd.doordash", "Package ID mismatch")
+	assert.Equal(t, data.Name, "DoorDash - Food Delivery", "Name mismatch")
+	assert.GreaterOrEqual(t, data.Version, "15.188.6", "Version mismatch")
+	assert.Equal(t, data.Downloads, "50,000,000+", "Downloads mismatch")
+	assert.GreaterOrEqual(t, data.DownloadsExact, 67209570.0, "Downloads Exact mismatch")
 
 	err = isValidDate(data.LastUpdated)
-	assert.Nil(t, err, err)
+	assert.Nil(t, err, fmt.Errorf("Invalid date format for lastUpdated: %v", err))
 
-	assert.Equal(t, data.LaunchDate, "Mar 26, 2015")
-	assert.Equal(t, data.Developer, "DoorDash")
-	assert.True(t, strings.Contains(data.Description, "Delivery anywhere you are."))
-	assert.Equal(t, data.Category, "Food \u0026 Drink")
+	assert.Equal(t, data.LaunchDate, "Mar 26, 2015", "Launch date mismatch")
+	assert.Equal(t, data.Developer, "DoorDash", "Developer mismatch")
+	assert.True(t, strings.Contains(data.Description, "Delivery anywhere you are."), "Description mismatch")
+	assert.Equal(t, data.Category, "Food \u0026 Drink", "Category mismatch")
 
 	_, err = url.ParseRequestURI(data.Logo)
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Invalid URL for logo")
 
 	_, err = url.ParseRequestURI(data.Banner)
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Invalid URL for banner")
 
 	for _, s := range data.Screenshots {
 		_, err = url.ParseRequestURI(s)
-		assert.Nil(t, err)
+		assert.Nil(t, err, fmt.Sprintf("Invalid URL for screenshot: %s", s))
 	}
 
-	assert.Equal(t, data.PrivacyPolicy, "https://www.doordash.com/privacy/")
-	assert.Greater(t, len(data.LatestUpdateMessage), 0)
-	assert.Equal(t, data.Website, "https://www.doordash.com/")
-	assert.Equal(t, data.SupportEmail, "support@doordash.com")
-	assert.True(t, data.Rating > "0.0" && data.Rating < "5.0")
-	assert.GreaterOrEqual(t, data.NoOfUsersRated, "4,712,796")
+	assert.Equal(t, data.PrivacyPolicy, "https://www.doordash.com/privacy/", "Privacy policy mismatch")
+	assert.Greater(t, len(data.LatestUpdateMessage), 0, "Latest update message missing")
+	assert.Equal(t, data.Website, "https://www.doordash.com/", "Website mismatch")
+	assert.Equal(t, data.SupportEmail, "support@doordash.com", "Support email mismatch")
+	assert.True(t, data.Rating > "0.0" && data.Rating < "5.0", "Rating mismatch")
+	assert.GreaterOrEqual(t, data.NoOfUsersRated, "4,712,796", "No of users rated mismatch")
 }
